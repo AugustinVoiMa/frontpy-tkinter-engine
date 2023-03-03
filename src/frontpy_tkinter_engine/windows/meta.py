@@ -1,0 +1,2 @@
+class TkinterEngineError(Exception):
+    pass
