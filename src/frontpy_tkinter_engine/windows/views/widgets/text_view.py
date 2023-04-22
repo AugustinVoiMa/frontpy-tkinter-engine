@@ -1,4 +1,4 @@
-from tkinter import Label, TOP
+from tkinter import Label, TOP, StringVar
 
 from frontpy_core.core.views import TextView
 from frontpy_tkinter_engine.windows.meta import TkinterEngineError
@@ -55,8 +55,22 @@ def start_text_view(view: TextView, state_store: TkinterStateStore):
     specific_kw["state"] = "disabled" if view.disabled else "normal"
 
     print(specific_kw)
-    lbl = Label(parent_frame, text=view.text, font=font, **specific_kw)
+    text_var = StringVar()
+    text_var.set(view.text)
+
+    lbl = Label(parent_frame,
+                font=font,
+                textvariable=text_var,
+                **specific_kw)
 
     apply_layout(lbl, view)
 
     state_store['label'] = lbl
+    state_store['variables'] = dict(
+        text=text_var
+    )
+
+
+def update_text(view: TextView, state_store: TkinterStateStore):
+    text_var: StringVar = state_store['variables']['text']
+    text_var.set(view.text)
