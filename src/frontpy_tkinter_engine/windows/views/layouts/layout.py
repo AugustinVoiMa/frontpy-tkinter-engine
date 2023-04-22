@@ -41,7 +41,7 @@ def layout_start(layout: Layout, state_store: TkinterStateStore):
             raise TkinterEngineError("The parent component of a text view does not store a 'frame' object.")
 
         frame = Frame(parent_frame, **kwargs)
-        frame.pack()
+        apply_layout(frame, layout)
         state_store["frame"] = frame
 
 
