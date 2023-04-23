@@ -14,8 +14,8 @@ def event2tkinter_sequence(event: Event):
         for key in event.keys:
             if key == "Ctrl":
                 key = "Control"
-            # if len(key) == 1:
-            #     key = key.lower()
+            if len(key) == 1:
+                key = key.lower()
             if key in ["Control", "Shift", "Alt"]:
                 ev_modifiers.append(key)
             else:
@@ -24,7 +24,8 @@ def event2tkinter_sequence(event: Event):
     assert len(ev_type) <= 1
     assert len(ev_detail) <= 1
     assert len(ev_type) > 0 or len(ev_detail) > 0
-
+    if "Shift" in ev_modifiers:
+        ev_detail = list(map(str.upper, ev_detail))
     seq = ev_modifiers + ev_type + ev_detail
     print("build sequence", seq)
     return "<" + '-'.join(seq) + ">"
