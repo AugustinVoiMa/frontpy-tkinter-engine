@@ -63,3 +63,10 @@ def start_button_view(view: ButtonView, state_store: TkinterStateStore):
     apply_layout(btn, view)
 
     state_store['button'] = btn
+
+    set_disabled(view, state_store)
+
+
+def set_disabled(view: ButtonView, state_store):
+    btn: Button = state_store['button']
+    btn["state"] = "disabled" if view.disabled else "normal"
