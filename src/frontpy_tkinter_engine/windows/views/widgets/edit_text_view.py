@@ -1,6 +1,6 @@
 from tkinter import Label, TOP, StringVar, Text, Scrollbar
 
-from frontpy_core.core.views import TextView
+from frontpy_core.core.views import TextView, EditTextView
 from frontpy_tkinter_engine.windows.meta import TkinterEngineError
 from frontpy_tkinter_engine.windows.tkinter_state_store import TkinterStateStore
 from frontpy_tkinter_engine.windows.views.layouts.layout import apply_layout
@@ -12,7 +12,7 @@ def create_state_store() -> TkinterStateStore:
     return TkinterStateStore()
 
 
-def start_edit_text_view(view: TextView, state_store: TkinterStateStore):
+def start_edit_text_view(view: EditTextView, state_store: TkinterStateStore):
     if "frame" not in view.parent.engine_state_store:
         raise TkinterEngineError("The parent component of a text view does not store a 'frame' object.")
 
@@ -49,30 +49,38 @@ def start_edit_text_view(view: TextView, state_store: TkinterStateStore):
     specific_kw["state"] = "disabled" if view.disabled else "normal"
 
     print(specific_kw)
-    text_var = StringVar()
-    text_var.set(view.text)
 
-    lbl = Text(parent_frame,
-               font=font,
-               **specific_kw)
+    text_wg = Text(parent_frame,
+                   font=font,
+                   **specific_kw)
+
+    if view.on_edit_listener is not None:
+        def event_handler(_):
+            view.on_edit_listener()
+
+        text_wg.bind("<Any-KeyPress>", event_handler)
 
     if scrollbar_y is not None:
-        scrollbar_y.configure(command=lbl.yview)
+        scrollbar_y.configure(command=text_wg.yview)
         scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
 
     if local_frame:
         # local frame implies EditText has it's own frame, so we can expand inside
-        lbl.pack(fill=tk.BOTH, expand=True)
+        text_wg.pack(fill=tk.BOTH, expand=True)
     else:
         # otherwise we apply layout config
-        apply_layout(lbl, view)
+        apply_layout(text_wg, view)
 
-    state_store['label'] = lbl
-    state_store['variables'] = dict(
-        text=text_var
-    )
+    state_store['text_widget'] = text_wg
 
 
-def update_text(view: TextView, state_store: TkinterStateStore):
-    text_var: StringVar = state_store['variables']['text']
-    text_var.set(view.text)
+def current_text(view: TextView, state_store: TkinterStateStore):
+    text_wg: Text = state_store['text_widget']
+    return text_wg.get(0., tk.END)
+
+
+def update_text(view: TextView, state_store: TkinterStateStore, text):
+    text_wg: Text = state_store['text_widget']
+    text_wg.delete(0., tk.END)
+    text_wg.insert(tk.END, text)
+    # text_wg.update()
