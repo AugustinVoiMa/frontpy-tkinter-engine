@@ -14,3 +14,8 @@ def start_frame_controller(fc: FrameController, state_store: TkinterStateStore):
     if fc.title is not None:
         root.title(fc.title)
     state_store['root'] = root
+
+
+def set_frame_title(fc: FrameController, state_store: TkinterStateStore):
+    root: Tk = state_store['root']
+    root.title(fc.title)
