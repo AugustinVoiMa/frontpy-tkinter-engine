@@ -3,6 +3,7 @@ from tkinter import Label, TOP, StringVar, Text, Scrollbar
 from frontpy_core.core.views import TextView, EditTextView
 from frontpy_tkinter_engine.windows.meta import TkinterEngineError
 from frontpy_tkinter_engine.windows.tkinter_state_store import TkinterStateStore
+from frontpy_tkinter_engine.windows.views.generic_view import set_event_listeners
 from frontpy_tkinter_engine.windows.views.layouts.layout import apply_layout
 from frontpy_tkinter_engine.windows.views.utils import get_font
 import tkinter as tk
@@ -71,16 +72,16 @@ def start_edit_text_view(view: EditTextView, state_store: TkinterStateStore):
         # otherwise we apply layout config
         apply_layout(text_wg, view)
 
-    state_store['text_widget'] = text_wg
+    state_store['widget'] = text_wg
+    set_event_listeners(view, state_store)
 
 
 def current_text(view: TextView, state_store: TkinterStateStore):
-    text_wg: Text = state_store['text_widget']
+    text_wg: Text = state_store['widget']
     return text_wg.get(0., tk.END)
 
 
 def update_text(view: TextView, state_store: TkinterStateStore, text):
-    text_wg: Text = state_store['text_widget']
+    text_wg: Text = state_store['widget']
     text_wg.delete(0., tk.END)
     text_wg.insert(tk.END, text)
-    # text_wg.update()

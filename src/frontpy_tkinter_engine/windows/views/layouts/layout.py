@@ -42,7 +42,7 @@ def layout_start(layout: Layout, state_store: TkinterStateStore):
 
         frame = Frame(parent_frame, **kwargs)
         apply_layout(frame, layout)
-        state_store["frame"] = frame
+        state_store["widget"] = frame
 
 
 def apply_layout(widget: Widget, view: View):

@@ -12,10 +12,10 @@ def create_state_store() -> TkinterStateStore:
 
 
 def start_button_view(view: ButtonView, state_store: TkinterStateStore):
-    if "frame" not in view.parent.engine_state_store:
+    if "widget" not in view.parent.engine_state_store:
         raise TkinterEngineError("The parent component of a text view does not store a 'frame' object.")
 
-    parent_frame = view.parent.engine_state_store["frame"]  # get the frame in which to put this label
+    parent_frame = view.parent.engine_state_store["widget"]  # get the frame in which to put this label
 
     font = get_font(view._kw_attrs)
 
@@ -62,11 +62,11 @@ def start_button_view(view: ButtonView, state_store: TkinterStateStore):
 
     apply_layout(btn, view)
 
-    state_store['button'] = btn
+    state_store['widget'] = btn
 
     set_disabled(view, state_store)
 
 
 def set_disabled(view: ButtonView, state_store):
-    btn: Button = state_store['button']
+    btn: Button = state_store['widget']
     btn["state"] = "disabled" if view.disabled else "normal"

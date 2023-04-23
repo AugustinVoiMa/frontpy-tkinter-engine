@@ -3,6 +3,7 @@ from tkinter import Label, TOP, StringVar
 from frontpy_core.core.views import TextView
 from frontpy_tkinter_engine.windows.meta import TkinterEngineError
 from frontpy_tkinter_engine.windows.tkinter_state_store import TkinterStateStore
+from frontpy_tkinter_engine.windows.views.generic_view import set_event_listeners
 from frontpy_tkinter_engine.windows.views.layouts.layout import apply_layout
 from frontpy_tkinter_engine.windows.views.utils import get_font
 
@@ -15,7 +16,7 @@ def start_text_view(view: TextView, state_store: TkinterStateStore):
     if "frame" not in view.parent.engine_state_store:
         raise TkinterEngineError("The parent component of a text view does not store a 'frame' object.")
 
-    parent_frame = view.parent.engine_state_store["frame"]  # get the frame in which to put this label
+    parent_frame = view.parent.engine_state_store["widget"]  # get the frame in which to put this label
 
     font = get_font(view._kw_attrs)
 
@@ -65,10 +66,11 @@ def start_text_view(view: TextView, state_store: TkinterStateStore):
 
     apply_layout(lbl, view)
 
-    state_store['label'] = lbl
+    state_store['widget'] = lbl
     state_store['variables'] = dict(
         text=text_var
     )
+    set_event_listeners(view, state_store)
 
 
 def update_text(view: TextView, state_store: TkinterStateStore):
